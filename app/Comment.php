@@ -10,4 +10,6 @@ class Comment extends Model
 
         'content', 'date_written','user_id','post_id'
     ];
+
+
 }
