@@ -40,6 +40,9 @@ Route::get('comments/posts/{id}','Api\PostsController@comments');
  * End of post related
  */
 
+Route::post('register', 'Api\UserController@store');
+Route::post('token', 'Api\UserController@getToken');
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
