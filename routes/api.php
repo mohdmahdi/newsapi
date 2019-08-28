@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-/*
+/**
  @users related
  */
 
@@ -21,6 +21,25 @@ Route::get('authors', 'Api\UserController@index');
 Route::get('authors/{id}' , 'Api\UserController@show' );
 Route::get('/posts/author/{id}' , 'Api\UserController@posts' );
 Route::get('/comments/author/{id}' , 'Api\UserController@comments' );
+
+/*
+End of user related
+*/
+
+/**
+ * @posts related
+ */
+
+Route::get('categories','Api\CategoryController@index');
+Route::get('posts/categories/{id}','Api\CategoryController@posts');
+Route::get('posts','Api\PostsController@index');
+Route::get('posts/{id}','Api\PostsController@show');
+Route::get('comments/posts/{id}','Api\PostsController@comments');
+
+/*
+ * End of post related
+ */
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
