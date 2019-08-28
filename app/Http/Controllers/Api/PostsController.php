@@ -7,6 +7,7 @@ use App\Http\Resources\CommentsResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostsResource;
 use App\Post;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -28,7 +29,34 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+            'category_id' => 'required',
+        ]);
+
+        $user = $request->user();
+        $post = new post();
+        $post->title = $request->get('title');
+        $post->content = $request->get('content');
+        if(intval( $request->get('category_id')) !=0 ){
+            $post->category_id = $request->get('category_id');
+        }
+        $post -> user_id = $user->id;
+        //TODO:handle the features_image file uplaod
+
+        $post->votes_up = 0;
+        $post->votes_down = 0;
+
+        $post ->date_written = Carbon::now()->format('Y-m-d m:i:s');
+
+        $post->save();
+
+        return new PostResource($post);
+
+
+
     }
 
     /**
