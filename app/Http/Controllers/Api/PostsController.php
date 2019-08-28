@@ -70,7 +70,7 @@ class PostsController extends Controller
         $posts = Post::find($id);
         $comments = $posts->Comments()-> paginate(env('COMMENTS_PER_PAGE'));
         return new CommentsResource($comments);
-        
+
 
 
     }
