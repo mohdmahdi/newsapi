@@ -51,6 +51,8 @@ Route::middleware('auth:api')->group(function(){
     Route::post('posts/{id}', 'Api\PostsController@update');
     Route::delete('posts/{id}', 'Api\PostsController@destroy');
 
+    Route::post('comments/posts/{id}', 'Api\commentController@store');
+
 });
 
 
