@@ -46,7 +46,11 @@ Route::post('token', 'Api\UserController@getToken');
 
 Route::middleware('auth:api')->group(function(){
 
-    Route::Post('update-user/{id}', 'Api\UserController@update');
+    Route::post('update-user/{id}', 'Api\UserController@update');
+    Route::post('posts', 'Api\PostsController@store');
+    Route::post('posts/{id}', 'Api\PostsController@update');
+    Route::delete('posts/{id}', 'Api\PostsController@destroy');
+
 });
 
 

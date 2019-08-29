@@ -10,6 +10,7 @@ use App\Post;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
 {
@@ -22,10 +23,8 @@ class PostsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return PostResource
      */
     public function store(Request $request)
     {
@@ -44,12 +43,26 @@ class PostsController extends Controller
             $post->category_id = $request->get('category_id');
         }
         $post -> user_id = $user->id;
-        //TODO:handle the features_image file uplaod
+
 
         $post->votes_up = 0;
         $post->votes_down = 0;
 
         $post ->date_written = Carbon::now()->format('Y-m-d m:i:s');
+
+        //image handling
+        if($request->hasFile('featured_image')){
+            $featuredImage = $request->file('featured_image');
+            $filename = time().$featuredImage->getClientOriginalName();
+            Storage::disk('images')->putFileAs(
+                $filename,
+                $featuredImage,
+                $filename
+            );
+            $post->featured_image = url('/').'/images' .$filename;
+
+
+        }
 
         $post->save();
 
@@ -60,10 +73,8 @@ class PostsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return PostResource
      */
     public function show($id)
     {
@@ -72,26 +83,60 @@ class PostsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $id
+     * @return PostResource
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = $request->user();
+        $post = Post::find($id);
+
+        if($request->has('title')) {
+            $post->title = $request->get('title');
+        }
+
+        if($request->has('content')) {
+            $post->content = $request->get('content');
+        }
+
+        if($request->has('category_id')) {
+
+            if(intval( $request->get('category_id')) !=0 ){
+                $post->category_id = $request->get('category_id');
+            }
+
+        }
+
+        //image handling
+        if($request->hasFile('featured_image')){
+            $featuredImage = $request->file('featured_image');
+            $filename = time().$featuredImage->getClientOriginalName();
+            Storage::disk('images')->putFileAs(
+                $filename,
+                $featuredImage,
+                $filename
+            );
+            $post->featured_image = url('/').'/images/' .$filename;
+        }
+
+        $post->save();
+
+        return new PostResource($post);
+
+
+
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return PostResource
      */
     public function destroy($id)
     {
-        //
+        $post = Post::destroy($id);
+        return new PostResource($post);
+
     }
 
     public function comments($id){
