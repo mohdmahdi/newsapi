@@ -134,7 +134,8 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        $post = Post::destroy($id);
+        $post = Post::find($id);
+        $post->delete();
         return new PostResource($post);
 
     }
@@ -143,8 +144,6 @@ class PostsController extends Controller
         $posts = Post::find($id);
         $comments = $posts->Comments()-> paginate(env('COMMENTS_PER_PAGE'));
         return new CommentsResource($comments);
-
-
 
     }
 
